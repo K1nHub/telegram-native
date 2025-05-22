@@ -11,9 +11,17 @@ AttachAddIn("<path>", "Telegram", AddInType.Native);
 ComponentObject = New("AddIn.Telegram.TelegramNative");
 ```
 
-## Latest builds
-[Windows x86](https://ci.appveyor.com/api/projects/Infactum/telegram-native/artifacts/telegram_native_x86.dll?job=Image%3A%20Visual%20Studio%202017%3B%20Environment%3A%20TARGET_PLATFORM%3Dx86)
+## Build
 
-[Windows x64](https://ci.appveyor.com/api/projects/Infactum/telegram-native/artifacts/telegram_native_x64.dll?job=Image%3A%20Visual%20Studio%202017%3B%20Environment%3A%20TARGET_PLATFORM%3Dx64)
+Currently tested with tdlib 1.8.49 on Win11 24H2 host
 
-[Linux x64](https://ci.appveyor.com/api/projects/Infactum/telegram-native/artifacts/telegram_native_x64.so?job=Image%3A%20Ubuntu%3B%20Environment%3A%20TARGET_PLATFORM%3Dx64)
+Requirements:
+- https://cmake.org/download/
+- https://visualstudio.microsoft.com/ru/vs/community/ (with C++ developing)
+- https://git-scm.com/downloads
+
+1. Change ```MSVC_HOME``` variable in ```build-telegram-native.ps1```
+2. If you already have builded tdlib and added it to PATH, comment line ```& .\build-tdlib.ps1 $CurrDir```
+3. Run ```build-telegram-native.ps1```
+
+Result will be in ```./build``` folder
