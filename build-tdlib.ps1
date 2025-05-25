@@ -1,12 +1,9 @@
 param ([string]$origProject)
 
-$VCPKG_HASH = "294f76666c3000630d828703e675814c05a4fd43"
-$TDLIB_HASH = "51743dfd01dff6179e2d8f7095729caa4e2222e9"
-
 # Save orig PATH to restore at the end
 $OrigPATH = $env:PATH
 # Change to exist MSVS path
-$MSVC_HOME = "D:\Programs\Microsoft Visual Studio\2022\Community"
+$MSVC_HOME = "..\..\Microsoft Visual Studio\2022\Community"
 
 Write-Host "[I] Building TDLib" -ForegroundColor Green
 git clone https://github.com/tdlib/td.git .\tools\td
