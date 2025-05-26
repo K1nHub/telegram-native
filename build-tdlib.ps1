@@ -21,8 +21,21 @@ else {
       Write-Host "[I] TDLib VCPKG package successfully installed!" -ForegroundColor Green
 }
 
+$NINJA_VERSION = "v1.12.1"
+if (Test-Path $CurrDir\tools\ninja.exe){
+      Write-Host "[I] Ninja builder already exist" -ForegroundColor Green
+}
+else{
+      Write-Host "[w] Ninja builder doesn't exist, downloading..." -ForegroundColor DarkYellow
+      Invoke-WebRequest "https://github.com/ninja-build/ninja/releases/download/$NINJA_VERSION/ninja-win.zip" -OutFile $CurrDir\tools\ninja-win.zip
+      Expand-Archive $CurrDir\tools\ninja-win.zip $CurrDir\tools\
+      Remove-Item $CurrDir\tools\ninja-win.zip
+      Write-Host "[I] Ninja builder successfully installed!" -ForegroundColor Green
+}
+
 $VCPKG_PATH = $CurrDir + "\vcpkg"
 $TARGET_PLATFORM = "x64"
+$env:PATH += "$CurrDir\tools;"
 
 if (Select-String -Path "$VCPKG_PATH\triplets\$TARGET_PLATFORM-windows-static.cmake" -SimpleMatch -Pattern "set(VCPKG_BUILD_TYPE release)"){
       Write-Host "[I] TDLib VCPKG already patched" -ForegroundColor Green
@@ -56,8 +69,9 @@ Write-Host "`n[I] TDLib Visual Studio Command Prompt variables set" -ForegroundC
 Remove-Item build -Force -Recurse -ErrorAction SilentlyContinue
 mkdir build
 Set-Location build
-cmake -A x64 -DCMAKE_INSTALL_PREFIX:PATH=../tdlib -DCMAKE_TOOLCHAIN_FILE:FILEPATH=../vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_BUILD_TYPE=Release -DGPERF_EXECUTABLE:FILEPATH="$VCPKG_PATH\installed\x64-windows-static\tools\gperf\gperf.exe" ..
-cmake --build . --target install --config Release -j8
+ninja --version
+cmake -G Ninja -DCMAKE_INSTALL_PREFIX:PATH=../tdlib -DCMAKE_TOOLCHAIN_FILE:FILEPATH=../vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_BUILD_TYPE=Release -DGPERF_EXECUTABLE:FILEPATH="$VCPKG_PATH\installed\x64-windows-static\tools\gperf\gperf.exe" ..
+cmake --build . --target install -- -j8
 
 # Return current PATH var for current session
 $env:PATH = $OrigPATH

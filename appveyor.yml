@@ -22,7 +22,7 @@ build_script:
       } | Set-Content build-telegram-native.ps1
 
       (Get-Content build-tdlib.ps1) | ForEach-Object {
-        $_.Replace('cmake --build . --target install --config Release -j8', 'cmake --build . --target install --config Release -j2')
+        $_.Replace('cmake --build . --target install -- -j8', 'cmake --build . --target install -- -j2')
       } | Set-Content build-tdlib.ps1
 
   - ps: ./build-telegram-native.ps1
