@@ -27,6 +27,7 @@ if (Test-Path $CurrDir\tools\ninja.exe){
 }
 else{
       Write-Host "[w] Ninja builder doesn't exist, downloading..." -ForegroundColor DarkYellow
+      mkdir  $CurrDir\tools
       Invoke-WebRequest "https://github.com/ninja-build/ninja/releases/download/$NINJA_VERSION/ninja-win.zip" -OutFile $CurrDir\tools\ninja-win.zip
       Expand-Archive $CurrDir\tools\ninja-win.zip $CurrDir\tools\
       Remove-Item $CurrDir\tools\ninja-win.zip
