@@ -31,6 +31,7 @@ if (Select-String -Path "$VCPKG_PATH\triplets\$TARGET_PLATFORM-windows-static.cm
 else {
       Write-Host "[W] Patching TDLib VCPKG..." -ForegroundColor DarkYellow
       Add-Content -Path "$VCPKG_PATH\triplets\$TARGET_PLATFORM-windows-static.cmake" -Value "set(VCPKG_BUILD_TYPE release)"
+      Get-Content $VCPKG_PATH\triplets\$TARGET_PLATFORM-windows-static.cmake
       Write-Host "[I] TDLib VCPKG successfuly patched!" -ForegroundColor Green
 }
 

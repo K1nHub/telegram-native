@@ -13,11 +13,11 @@ environment:
 build_script:
   - ps: |
       (Get-Content build-tdlib.ps1) | ForEach-Object {
-              $_.Replace('$MSVC_HOME = "..\..\Microsoft Visual Studio\2022\Community"', '$MSVC_HOME = "C:\Program Files (x86)\Microsoft Visual Studio\2022\Community"')
+              $_.Replace('$MSVC_HOME = "..\..\Microsoft Visual Studio\2022\Community"', '$MSVC_HOME = "C:\Program Files\Microsoft Visual Studio\2022\Community"')
             } | Set-Content build-tdlib.ps1
 
       (Get-Content build-telegram-native.ps1) | ForEach-Object {
-        $_.Replace('$MSVC_HOME = "..\..\Microsoft Visual Studio\2022\Community"', '$MSVC_HOME = "C:\Program Files (x86)\Microsoft Visual Studio\2022\Community"')
+        $_.Replace('$MSVC_HOME = "..\..\Microsoft Visual Studio\2022\Community"', '$MSVC_HOME = "C:\Program Files\Microsoft Visual Studio\2022\Community"')
       } | Set-Content build-telegram-native.ps1
 
   - ps: dir
