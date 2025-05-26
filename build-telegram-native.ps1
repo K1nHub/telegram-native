@@ -33,7 +33,7 @@ else{
 
 $VCPKG_PATH = $CurrDir + "\tools\vcpkg"
 $TARGET_PLATFORM = "x64"
-$env:PATH += "$VCPKG_PATH;$CurrDir\tools;D:\Work\Intertool\td-current\tdlib;$CurrDir\tools\td\tdlib"
+$env:PATH += "$CurrDir\tools;D:\Work\Intertool\td-current\tdlib;$CurrDir\tools\td\tdlib"
 
 if (Select-String -Path "$VCPKG_PATH\triplets\$TARGET_PLATFORM-windows-static.cmake" -SimpleMatch -Pattern "set(VCPKG_BUILD_TYPE release)"){
       Write-Host "[I] VCPKG already patched" -ForegroundColor Green
@@ -44,7 +44,7 @@ else {
       Write-Host "[I] VCPKG successfuly patched!" -ForegroundColor Green
 }
 
-vcpkg list
+& $VCPKG_PATH\vcpkg list
 & ".\install_prereq.bat" "$VCPKG_PATH" $TARGET_PLATFORM
 
 # https://stackoverflow.com/questions/2124753/how-can-i-use-powershell-with-the-visual-studio-command-prompt

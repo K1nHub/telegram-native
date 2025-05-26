@@ -23,7 +23,6 @@ else {
 
 $VCPKG_PATH = $CurrDir + "\vcpkg"
 $TARGET_PLATFORM = "x64"
-$env:PATH += ";$VCPKG_PATH;"
 
 if (Select-String -Path "$VCPKG_PATH\triplets\$TARGET_PLATFORM-windows-static.cmake" -SimpleMatch -Pattern "set(VCPKG_BUILD_TYPE release)"){
       Write-Host "[I] TDLib VCPKG already patched" -ForegroundColor Green
@@ -39,9 +38,9 @@ else {
 git apply --verbose $origProject\tools\patches\tdlib-static.patch
 
 #vcpkg list
-vcpkg install gperf:x64-windows-static openssl:x64-windows-static zlib:x64-windows-static
-vcpkg list
-where vcpkg
+& $VCPKG_PATH/vcpkg.exe install gperf:x64-windows-static openssl:x64-windows-static zlib:x64-windows-static
+& $VCPKG_PATH/vcpkg.exe list
+
 
 # https://stackoverflow.com/questions/2124753/how-can-i-use-powershell-with-the-visual-studio-command-prompt
 Push-Location "$MSVC_HOME\VC\Auxiliary\Build"
