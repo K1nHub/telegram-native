@@ -1,8 +1,7 @@
 version: 1.0.0+{build}
 
 image:
-  - Visual Studio 2017
-  - Ubuntu
+  - Visual Studio 2022
 
 configuration: Release
 
@@ -11,78 +10,10 @@ platform: x64
 environment:
   APPVEYOR_SAVE_CACHE_ON_ERROR: true
 
-  VCPKG_PATH: "c:\\tools\\vcpkg"
-  NINJA_URL_WIN: "https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-win.zip"
-  MSVC_HOME: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community"
-
-  DOCKER_LOGIN: infactum
-  DOCKER_PASSWORD:
-    secure: wWPsUiEtw8rfnjX2/Y3/AA==
-  DOCKER_IMAGE: infactum/telegram-native-builder
-
-  matrix:
-    - TARGET_PLATFORM: x86
-    - TARGET_PLATFORM: x64
-
-matrix:
-  exclude:
-    - image: Ubuntu
-      TARGET_PLATFORM: x86
-
 init:
   - ps: |
-      If ($isLinux) {
-        $env:APPVEYOR_CACHE_SKIP_RESTORE = "true"
-        $env:APPVEYOR_CACHE_SKIP_SAVE = "true"
-      }
-  - cmd: |      
-      appveyor DownloadFile %NINJA_URL_WIN% -FileName ninja.zip
-      7z x ninja.zip -oC:\ninja > nul
-      rm ninja.zip
-      set PATH=C:\ninja;%PATH%
-      ninja --version
-  - cmd: |      
-      echo. >> "%VCPKG_PATH%\triplets\%TARGET_PLATFORM%-windows-static.cmake"
-      echo set(VCPKG_BUILD_TYPE release) >> "%VCPKG_PATH%\triplets\%TARGET_PLATFORM%-windows-static.cmake"
-  - sh: |
-      docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
-      docker pull $DOCKER_IMAGE
-
-install: 
-  - cmd: |      
-      vcpkg list      
-      .\install_prereq.bat "%VCPKG_PATH%" %TARGET_PLATFORM%
-  - sh: docker build . --cache-from $DOCKER_IMAGE -t $DOCKER_IMAGE:latest -f tools/docker/linux-builder/Dockerfile
-
-cache:
-    - '%VCPKG_PATH%\installed\ -> install_prereq.bat, ports'
+      (Get-Content build-tdlib.ps1) -replace '$MSVC_HOME = "..\..\Microsoft Visual Studio\2022\Community"', '$MSVC_HOME = "C:\Program Files (x86)\Microsoft Visual Studio\2022\Community"' | Set-Content config.txt
+      (Get-Content build-telegram-native.ps1) -replace '$MSVC_HOME = "..\..\Microsoft Visual Studio\2022\Community"', '$MSVC_HOME = "C:\Program Files (x86)\Microsoft Visual Studio\2022\Community"' | Set-Content config.txt
 
 build_script: 
-  - cmd: |
-      call "%MSVC_HOME%\VC\Auxiliary\Build\vcvarsall.bat" %TARGET_PLATFORM%
-      mkdir build
-      cd build
-      cmake "-DCMAKE_TOOLCHAIN_FILE=%VCPKG_PATH%\scripts\buildsystems\vcpkg.cmake" "-DVCPKG_TARGET_TRIPLET=%TARGET_PLATFORM%-windows-static" "-DCMAKE_BUILD_TYPE=%CONFIGURATION%" -GNinja ..
-      ninja
-  - sh: >- 
-      docker run --rm -v $(pwd):/src $DOCKER_IMAGE /bin/bash -c "
-        mkdir build && cd build;
-        cmake -DCMAKE_BUILD_TYPE=Release /src;
-        cmake --build .;
-        ldd telegram_native.so;
-        cp telegram_native.so /src;"
-
-after_build:
-  - sh: docker push $DOCKER_IMAGE
-  - ps: |
-      $prefix = "telegram_native"
-      $suffix = If ($isLinux) {".so"} Else {".dll"}
-      $artifact = "$($prefix)_$($env:TARGET_PLATFORM)$($suffix)"
-      Rename-Item -Path "$prefix$suffix" -NewName "$artifact"
-      Write-Host "Pushing artifact $artifact"
-      Push-AppveyorArtifact $artifact
-
-on_failure:
-  - cmd: |
-      7z a logs.zip "%VCPKG_PATH%\buildtrees\**\*.log"
-      appveyor PushArtifact logs.zip
+  - ps: ./build-telegram-native.ps1
