@@ -12,8 +12,8 @@ environment:
 
 init:
   - ps: |
-      (Get-Content build-tdlib.ps1) -replace '$MSVC_HOME = "..\..\Microsoft Visual Studio\2022\Community"', '$MSVC_HOME = "C:\Program Files (x86)\Microsoft Visual Studio\2022\Community"' | Set-Content config.txt
-      (Get-Content build-telegram-native.ps1) -replace '$MSVC_HOME = "..\..\Microsoft Visual Studio\2022\Community"', '$MSVC_HOME = "C:\Program Files (x86)\Microsoft Visual Studio\2022\Community"' | Set-Content config.txt
+      (Get-Content build-tdlib.ps1) -replace '$MSVC_HOME = "..\..\Microsoft Visual Studio\2022\Community"', '$MSVC_HOME = "C:\Program Files (x86)\Microsoft Visual Studio\2022\Community"' | Set-Content build-tdlib.ps1
+      (Get-Content build-telegram-native.ps1) -replace '$MSVC_HOME = "..\..\Microsoft Visual Studio\2022\Community"', '$MSVC_HOME = "C:\Program Files (x86)\Microsoft Visual Studio\2022\Community"' | Set-Content build-telegram-native.ps1
 
 build_script: 
   - ps: ./build-telegram-native.ps1
