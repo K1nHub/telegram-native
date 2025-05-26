@@ -10,9 +10,7 @@ platform: x64
 environment:
   APPVEYOR_SAVE_CACHE_ON_ERROR: true
 
-init:
-  - ps: |
-      dir
+build_script:
   - ps: |
       (Get-Content build-tdlib.ps1) | ForEach-Object {
               $_.Replace('$MSVC_HOME = "..\..\Microsoft Visual Studio\2022\Community"', '$MSVC_HOME = "C:\Program Files (x86)\Microsoft Visual Studio\2022\Community"')
@@ -21,6 +19,7 @@ init:
       (Get-Content build-telegram-native.ps1) | ForEach-Object {
         $_.Replace('$MSVC_HOME = "..\..\Microsoft Visual Studio\2022\Community"', '$MSVC_HOME = "C:\Program Files (x86)\Microsoft Visual Studio\2022\Community"')
       } | Set-Content build-telegram-native.ps1
-      
-build_script: 
+
+  - ps: dir
+
   - ps: ./build-telegram-native.ps1
