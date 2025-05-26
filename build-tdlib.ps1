@@ -17,7 +17,7 @@ if (Test-Path $CurrDir\vcpkg){
 else {
       Write-Host "[W] TDLib VCPKG package doesn't exist, downloading..." -ForegroundColor DarkYellow
       git clone https://github.com/microsoft/vcpkg.git .\vcpkg
-      .\vcpkg\bootstrap-vcpkg.bat
+      .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
       Write-Host "[I] TDLib VCPKG package successfully installed!" -ForegroundColor Green
 }
 
@@ -38,8 +38,10 @@ else {
 # Apply patch to force create static build of tdlib https://stackoverflow.com/questions/10113017/setting-the-msvc-runtime-in-cmake
 git apply --verbose $origProject\tools\patches\tdlib-static.patch
 
-vcpkg list
+#vcpkg list
 vcpkg install gperf:x64-windows-static openssl:x64-windows-static zlib:x64-windows-static
+vcpkg list
+where vcpkg
 
 # https://stackoverflow.com/questions/2124753/how-can-i-use-powershell-with-the-visual-studio-command-prompt
 Push-Location "$MSVC_HOME\VC\Auxiliary\Build"
