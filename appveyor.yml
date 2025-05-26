@@ -1,4 +1,4 @@
-version: 1.0.0+{build}
+version: 1.8.49-{build}
 
 image:
   - Visual Studio 2022
@@ -14,13 +14,15 @@ environment:
 build_script:
   - ps: |
       (Get-Content build-tdlib.ps1) | ForEach-Object {
-              $_.Replace('$MSVC_HOME = "..\..\Microsoft Visual Studio\2022\Community"', '$MSVC_HOME = "C:\Program Files\Microsoft Visual Studio\2022\Community"')
-            } | Set-Content build-tdlib.ps1
+          $_.Replace('$MSVC_HOME = "..\..\Microsoft Visual Studio\2022\Community"', '$MSVC_HOME = "C:\Program Files\Microsoft Visual Studio\2022\Community"')
+        } | Set-Content build-tdlib.ps1
 
       (Get-Content build-telegram-native.ps1) | ForEach-Object {
         $_.Replace('$MSVC_HOME = "..\..\Microsoft Visual Studio\2022\Community"', '$MSVC_HOME = "C:\Program Files\Microsoft Visual Studio\2022\Community"')
       } | Set-Content build-telegram-native.ps1
 
-  - ps: dir
+      (Get-Content build-tdlib.ps1) | ForEach-Object {
+        $_.Replace('cmake --build . --target install --config Release -j8', 'cmake --build . --target install --config Release -j2')
+      } | Set-Content build-tdlib.ps1
 
   - ps: ./build-telegram-native.ps1

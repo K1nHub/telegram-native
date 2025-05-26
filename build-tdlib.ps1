@@ -57,7 +57,7 @@ Remove-Item build -Force -Recurse -ErrorAction SilentlyContinue
 mkdir build
 Set-Location build
 cmake -A x64 -DCMAKE_INSTALL_PREFIX:PATH=../tdlib -DCMAKE_TOOLCHAIN_FILE:FILEPATH=../vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_BUILD_TYPE=Release -DGPERF_EXECUTABLE:FILEPATH="$VCPKG_PATH\installed\x64-windows-static\tools\gperf\gperf.exe" ..
-cmake --build . --target install --config Release
+cmake --build . --target install --config Release -j8
 
 # Return current PATH var for current session
 $env:PATH = $OrigPATH
